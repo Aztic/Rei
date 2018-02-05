@@ -1,0 +1,48 @@
+body {
+  padding: 20px 50px;
+  margin:0px;
+  background-color: #2a2734;
+}
+
+.CodeMirror,
+textarea{
+  margin-top: 30px;
+  border:none;
+  background: transparent;
+  min-width: 100%;
+  min-height: 600px;
+  height: 600px;
+  margin-left: -20px;
+}
+.rounded {
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+}
+
+select,
+button{
+  outline: none;
+  background: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-size: 14px;
+  color: rgb(222, 215, 236);
+  border-top: 0px;
+  border-right: 0px;
+  border-left: 0px;
+  border-radius: 2px;
+}
+#mode-select:hover,
+#mode-select:active,
+#mode-select:focus,
+button:hover,
+button:active,
+button:focus{
+  outline: none;
+  background: transparent;
+}
+a {
+  color: #00B7FF;
+}

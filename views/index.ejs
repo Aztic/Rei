@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/minified.css"/>
+  </head>
+
+  <body>
+    <form id="code-form" action="/" method="POST">
+      <% if(!readonly){ %>
+        <div>
+          <select onchange="changeMode()" id="mode-select" name="ext">
+              <option value="cpp//text/x-c++src">C++</option>
+              <option value="c//text/x-csrc">C</option>
+              <option value="cs//text/x-csharp">C#</option>
+              <option value="java//text/x-java">Java</option>
+              <option value="js//text/javascript">Javascript</option>
+              <option value="coffee//text/coffeescript">CoffeeScript</option>
+              <option value="cr//text/x-crystal">Crystal</option>
+              <option value="css//text/css">Css</option>
+              <option value="go//text/x-go">Go</option>
+              <option value="lua//text/x-lua">Lua</option>
+              <option value="md//text/x-markdown">Markdown</option>
+              <option value="conf//text/x-nginx-conf">Nginx</option>
+              <option value="php//text/x-php">php</option>
+              <option value="py//text/x-python">Python</option>
+              <option value="swift//text/x-swift">Swift</option>
+              <option value="yml//text/x-yaml">Yaml</option>
+            </select>
+            <button type="submit" form="code-form">Save</button>
+        </div>
+      <% } %>
+      <textarea type="textarea" name="code" id="code"><%= code %></textarea>
+    </form>
+    
+  </body>
+  <script src="/javascripts/minified.js"></script>
+  <script src="/javascripts/main.js"></script>
+  <% if (readonly) { %>
+    <script>
+      let href = location.href;
+      let ext = (href.match(/([^\/]*)\/*$/)[1]).split(".")[1];
+      editor.setOption("readOnly",true);
+      editor.setOption("mode",LANG_MODES[ext])
+    </script>
+  <% } %>
+</html>
