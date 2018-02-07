@@ -15,11 +15,11 @@ Code diplay online, it uses [CodeMirror](https://codemirror.net/) to the editor.
 ## Usage
 
 You can either go to `localhost:3000` (or your configured url) or use it with cURL like
-`curl -d "extension" --data-binary "@file" url`
+`curl -F "code=@your_file.extension" url`
 
 For example:
 ```bash
-  $ curl -d "cpp" --data-binary "@test.cpp" http://localhost:3000/
+  $ curl -F "code=test.cpp" http://localhost:3000/
 ```
 that will return the url of the file, something like
 `https://le_url/random_name.cpp`

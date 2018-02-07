@@ -1,5 +1,7 @@
 let express = require('express');
 let router = express.Router();
+let multer = require('multer');
+let path = require('path');
 let fs = require('fs');
 let crypto = require("crypto");
 const BASE_URL = "http://localhost:3000/"
@@ -12,6 +14,27 @@ function randomInteger(max,min){
   return Math.floor(Math.random() * (max-min+1)) + min;
 }
 
+
+let codeStorage = multer.diskStorage({
+  destination: function (req,file,cb){
+    cb(null,'upload/');
+  },
+  filename: function (req,file,cb) {
+    //File "extension"
+    let extension = path.extname(file.originalname);
+    if(!VALID_EXTENSIONS.includes(extension.slice(1))){
+      return cb(new Error("invalid extension"));
+    }
+    //Random filename
+    let name;
+    //While the name exists, generate a new one
+    do{
+        name = crypto.randomBytes(randomInteger(10,5)).toString("hex") + extension;
+    }while(fs.existsSync(`./upload/${name}`));
+    cb(null,name);
+  }
+})
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Rei', readonly: false,code:undefined});
@@ -19,35 +42,36 @@ router.get('/', function(req, res, next) {
 
 router.post('/',function(req,res,next){
   let code,ext;
-
   if(!isBrowser(req)){
-    k = Object.keys(req.body);
-    ext = k[0];
-    code = k[1];
+    /** Multer things **/
+    let up = multer({storage:codeStorage}).single('code');
+    up(req,res,err=>{
+      if(err){
+        console.log(err);
+        return res.send(`${err} happened`);
+      }
+      return res.send(`${BASE_URL}${req.file.filename}\n`);
+    });
   }
   else{
+    console.log(req.body);
+    console.log(req.headers)
     code = req.body.code;
     ext = req.body.ext.split("//")[0];
-  }
 
-  if(VALID_EXTENSIONS.indexOf(ext) === -1)
+    if(VALID_EXTENSIONS.indexOf(ext) === -1)
     return res.send("invalid extension\n");
 
-  let filename;
-  do{
-    filename = crypto.randomBytes(randomInteger(10,5)).toString("hex") +"."+ ext;
-  }while(fs.existsSync(`./upload/${filename}`));
+    let filename;
+    do{
+      filename = crypto.randomBytes(randomInteger(10,5)).toString("hex") +"."+ ext;
+    }while(fs.existsSync(`./upload/${filename}`));
 
-  fs.writeFile(`./upload/${filename}`,code,(err)=>{
-    if(err)
-      throw err;
-  });
-
-  if(isBrowser(req)){
-    return res.redirect("/"+filename);
-  }
-  else{
-    return res.send(`${BASE_URL}${filename}\n`);
+    fs.writeFile(`./upload/${filename}`,code,(err)=>{
+      if(err)
+        throw err;
+    });
+    return res.redirect("/"+filename);    
   }
 });
 
